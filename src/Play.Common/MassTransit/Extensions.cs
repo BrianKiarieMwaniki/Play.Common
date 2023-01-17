@@ -26,6 +26,11 @@ namespace Play.Common.MassTransit
                     configurator.Host(rabbitMQSettings.Host);
 
                     configurator.ConfigureEndpoints(context, new KebabCaseEndpointNameFormatter(serviceSettings.ServiceName, false));
+
+                    configurator.UseMessageRetry(retryConfigurator =>
+                    {
+                        retryConfigurator.Interval(3, TimeSpan.FromSeconds(5));
+                    });
                 });
             });
 
@@ -36,7 +41,7 @@ namespace Play.Common.MassTransit
                 options.StopTimeout = TimeSpan.FromMinutes(1);
             });
 
-            return services;            
+            return services;
         }
     }
 }
